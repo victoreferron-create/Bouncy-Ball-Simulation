@@ -37,6 +37,19 @@ def gameloop():
             sys.exit()
 
     screen.fill(BG_COLOR)
+    # handle ball-to-ball collisions
+    for i in range(NUM_BALLS):
+        x1, y1 = positions[i]
+        sx1, sy1 = velocities[i]
+        for j in range(NUM_BALLS):
+            x2, y2 = positions[j]
+            sx2, sy2 = velocities[j]
+
+            # check if the balls are ovelapping
+            distance_sq = (x1 - x2)**2 + (y1 - y2)**2
+            if (distance_sq > BALL_SIZE**2):
+                continue
+
 
     # handle walls
     for i in range(NUM_BALLS):

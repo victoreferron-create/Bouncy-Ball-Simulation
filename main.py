@@ -46,11 +46,15 @@ def gameloop():
             sx2, sy2 = velocities[j]
 
             # check if the balls are ovelapping
-            distance_sq = (x1 - x2)**2 + (y1 - y2)**2
+            distance_sq = (x1 - x2)**2 + (y1 - y2)**2 # using sqared values to minimalize the use of the sqare root operation
             if (distance_sq > BALL_SIZE**2):
                 continue
                 
             distance = distance_sq ** 0.5
+
+            overlap = BALL_SIZE - distance
+
+            collision_normal = np.array((x1 - x2, y1 - y2)) / distance
             
 
     # handle walls

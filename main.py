@@ -49,7 +49,9 @@ def gameloop():
             distance_sq = (x1 - x2)**2 + (y1 - y2)**2
             if (distance_sq > BALL_SIZE**2):
                 continue
-
+                
+            distance = distance_sq ** 0.5
+            
 
     # handle walls
     for i in range(NUM_BALLS):

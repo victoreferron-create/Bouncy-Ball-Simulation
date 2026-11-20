@@ -12,8 +12,8 @@ pygame.display.set_caption("Bouncing Ball Simulation")
 clock = pygame.time.Clock()
 
 # simulation variables
-NUM_BALLS = 1000
-BALL_SIZE = 20
+NUM_BALLS = 20
+BALL_SIZE = 100
 BALL_STARTING_SPEED_RANGE = 20
 DRAG = 1
 BOUNCE = 0.99
@@ -39,23 +39,42 @@ def gameloop():
     screen.fill(BG_COLOR)
     # handle ball-to-ball collisions
     for i in range(NUM_BALLS):
-        x1, y1 = positions[i]
-        sx1, sy1 = velocities[i]
-        for j in range(NUM_BALLS):
-            x2, y2 = positions[j]
-            sx2, sy2 = velocities[j]
+        ipos = positions[i]
+        ivel = velocities[i]
+        for j in range(i + 1 ,NUM_BALLS):
 
-            # check if the balls are ovelapping
-            distance_sq = (x1 - x2)**2 + (y1 - y2)**2 # using sqared values to minimalize the use of the sqare root operation
-            if (distance_sq > BALL_SIZE**2):
+            jpos = positions[j]
+            jvel = velocities[j]
+
+            distance_sq = np.sum((ipos - jpos)**2)
+            if not distance_sq < BALL_SIZE**2:
                 continue
-                
+
             distance = distance_sq ** 0.5
+
+            collision_vector = (ipos - jpos) / distance
 
             overlap = BALL_SIZE - distance
 
-            collision_normal = np.array((x1 - x2, y1 - y2)) / distance
-            
+            ipos = ipos + (overlap / 2) * collision_vector
+            jpos = jpos - (overlap / 2) * collision_vector
+
+            rel_vel = ivel - jvel
+
+            closing_speed = rel_vel @ collision_vector
+
+            if closing_speed > 0:
+                continue
+
+            ivel = (ivel - closing_speed * collision_vector) * BOUNCE
+            jvel = (jvel + closing_speed * collision_vector) * BOUNCE
+
+            positions[i] = ipos
+            positions[j] = jpos
+
+            velocities[i] = ivel
+            velocities[j] = jvel
+
 
     # handle walls
     for i in range(NUM_BALLS):
